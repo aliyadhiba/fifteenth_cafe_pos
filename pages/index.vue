@@ -5,7 +5,7 @@ if (process.client) {
   if (isLoggedIn !== "true") {
     navigateTo("/login");
   } else {
-    navigateTo("/login");
+    navigateTo("/pos");
   }
 }
 </script>
