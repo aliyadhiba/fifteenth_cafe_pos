@@ -80,7 +80,7 @@ const selectOutlet = (outlet) => {
 }
 
 const goToPOS = () => {
-  navigateTo('/')
+  navigateTo('/pos')
 }
 </script>
 
