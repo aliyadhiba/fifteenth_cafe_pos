@@ -1,7 +1,7 @@
 <template>
   <div class="flex h-screen bg-white font-sans">
     <!-- Sidebar -->
-    <div class="w-1/4 bg-gray-50 border-r flex flex-col">
+    <div class="hidden md:flex md:w-1/4 bg-gray-50 border-r flex-col">
       <!-- Header Sidebar -->
       <div class="p-6 flex flex-col items-center border-b">
         <div class="bg-gray-300 rounded-lg w-16 h-16 flex items-center justify-center mb-3">

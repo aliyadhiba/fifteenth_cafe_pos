@@ -54,7 +54,7 @@
     </div>
     
     <!-- Cart Section -->
-    <div class="w-96 bg-white shadow-lg p-6">
+    <div class="hidden lg:block lg:w-96 bg-white shadow-lg p-6">
       <h3 class="text-xl font-bold text-gray-800 mb-4">Current Order</h3>
       
       <!-- Cart Items -->
