@@ -115,18 +115,21 @@
 
     <!-- ================= MODALS ================= -->
     <PaymentModal
-      :is-open="showPaymentModal"
-      :total="total"
-      :cart-items="cartItems"
-      @close="closePaymentModal"
-      @payment-complete="handlePaymentComplete"
-    />
+  v-if="showPaymentModal"
+  :is-open="showPaymentModal"
+  :total="total"
+  :cart-items="cartItems"
+  @close="closePaymentModal"
+  @payment-complete="handlePaymentComplete"
+/>
 
-    <ReceiptModal
-      :is-open="showReceiptModal"
-      :order-data="orderData"
-      @close="showReceiptModal = false"
-    />
+<ReceiptModal
+  v-if="showReceiptModal"
+  :is-open="showReceiptModal"
+  :order-data="orderData"
+  @close="showReceiptModal = false"
+/>
+
 
     <!-- ================= FOOTER ================= -->
     <div
@@ -140,23 +143,25 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { navigateTo } from '#app'
 import {
   MagnifyingGlassIcon,
   MinusIcon,
   PlusIcon,
   TrashIcon
 } from '@heroicons/vue/24/outline'
+
 import PaymentModal from '~/components/PaymentModal.vue'
 import ReceiptModal from '~/components/ReceiptModal.vue'
 
-/* ===== AUTH GUARD ===== */
+/* ================= AUTH GUARD ================= */
 onMounted(() => {
   if (localStorage.getItem('isLoggedIn') !== 'true') {
     navigateTo('/login')
   }
 })
 
-/* ===== STATE ===== */
+/* ================= STATE ================= */
 const searchQuery = ref('')
 const selectedCategory = ref('All')
 const cartItems = ref([])
@@ -164,7 +169,7 @@ const showPaymentModal = ref(false)
 const showReceiptModal = ref(false)
 const orderData = ref(null)
 
-/* ===== DATA ===== */
+/* ================= DATA ================= */
 const categories = ['All', 'Food', 'Beverages', 'Snacks', 'Desserts']
 
 const products = [
@@ -178,7 +183,7 @@ const products = [
   { id: 8, name: 'Juice', price: 5.99, category: 'Beverages', image: 'https://images.pexels.com/photos/96974/pexels-photo-96974.jpeg?auto=compress&cs=tinysrgb&w=400' }
 ]
 
-/* ===== COMPUTED ===== */
+/* ================= COMPUTED ================= */
 const filteredProducts = computed(() =>
   products.filter(p =>
     (selectedCategory.value === 'All' || p.category === selectedCategory.value) &&
@@ -187,31 +192,50 @@ const filteredProducts = computed(() =>
 )
 
 const subtotal = computed(() =>
-  cartItems.value.reduce((s, i) => s + i.price * i.quantity, 0)
+  cartItems.value.reduce((sum, i) => sum + i.price * i.quantity, 0)
 )
+
 const tax = computed(() => subtotal.value * 0.08)
 const total = computed(() => subtotal.value + tax.value)
 
-/* ===== CART ===== */
-const addToCart = p => {
-  const e = cartItems.value.find(i => i.id === p.id)
-  e ? e.quantity++ : cartItems.value.push({ ...p, quantity: 1 })
+/* ================= CART ================= */
+const addToCart = product => {
+  const item = cartItems.value.find(i => i.id === product.id)
+  item ? item.quantity++ : cartItems.value.push({ ...product, quantity: 1 })
 }
-const updateQuantity = (id, q) => {
-  const i = cartItems.value.find(i => i.id === id)
-  if (!i) return
-  q <= 0 ? removeFromCart(id) : i.quantity = q
-}
-const removeFromCart = id =>
-  cartItems.value = cartItems.value.filter(i => i.id !== id)
-const clearCart = () => cartItems.value = []
 
-/* ===== PAYMENT ===== */
+const updateQuantity = (id, qty) => {
+  const item = cartItems.value.find(i => i.id === id)
+  if (!item) return
+  qty <= 0 ? removeFromCart(id) : item.quantity = qty
+}
+
+const removeFromCart = id => {
+  cartItems.value = cartItems.value.filter(i => i.id !== id)
+}
+
+const clearCart = () => {
+  cartItems.value = []
+}
+
+/* ================= PAYMENT ================= */
 const openPaymentModal = () => showPaymentModal.value = true
 const closePaymentModal = () => showPaymentModal.value = false
 
-const handlePaymentComplete = data => {
-  orderData.value = { ...data, items: cartItems.value, total: total.value }
+const handlePaymentComplete = (data) => {
+  orderData.value = {
+    orderNumber: `ORD-${Date.now()}`,
+    date: new Date().toLocaleString(),
+    customerName: 'Guest',
+    items: [...cartItems.value],
+    subtotal: subtotal.value,
+    tax: tax.value,
+    total: total.value,
+    paymentMethod: data.paymentMethod,
+    amountReceived: data.amountReceived || 0,
+    change: data.change || 0
+  }
+
   clearCart()
   closePaymentModal()
   showReceiptModal.value = true
