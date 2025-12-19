@@ -1,6 +1,6 @@
 <script setup>
 onMounted(() => {
-  navigateTo('/login')
+  navigateTo('/pos')
 })
 </script>
 

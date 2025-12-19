@@ -156,10 +156,19 @@ import ReceiptModal from '~/components/ReceiptModal.vue'
 
 /* ================= AUTH GUARD ================= */
 onMounted(() => {
-  if (localStorage.getItem('isLoggedIn') !== 'true') {
+  const isLoggedIn = localStorage.getItem('isLoggedIn')
+  const outlet = localStorage.getItem('selectedOutlet')
+
+  if (isLoggedIn !== 'true') {
     navigateTo('/login')
+    return
+  }
+
+  if (!outlet) {
+    navigateTo('/outlet')
   }
 })
+
 
 /* ================= STATE ================= */
 const searchQuery = ref('')
