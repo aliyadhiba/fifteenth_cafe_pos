@@ -3,20 +3,25 @@ import { onMounted } from 'vue'
 import { navigateTo } from '#app'
 
 onMounted(() => {
-  // pastikan hanya jalan di client
   if (process.server) return
 
   const isLoggedIn = localStorage.getItem('isLoggedIn')
+  const selectedOutlet = localStorage.getItem('selectedOutlet')
 
-  if (isLoggedIn === 'true') {
-    navigateTo('/outlet') // atau '/pos' sesuai alur kamu
-  } else {
+  if (isLoggedIn !== 'true') {
     navigateTo('/login')
+    return
   }
+
+  if (!selectedOutlet) {
+    navigateTo('/outlet')
+    return
+  }
+
+  navigateTo('/pos')
 })
 </script>
 
 <template>
-  <!-- root tidak menampilkan UI -->
   <div></div>
 </template>
