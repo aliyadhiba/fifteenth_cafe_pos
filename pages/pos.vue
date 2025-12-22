@@ -166,6 +166,7 @@ onMounted(() => {
 
   if (!outlet) {
     navigateTo('/outlet')
+    return
   }
 })
 

@@ -13,7 +13,7 @@
       <nav class="mt-6">
         <div class="px-4 space-y-2">
           <NuxtLink 
-  to="/" 
+  to="/pos" 
   @click="closeSidebar"
   class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition"
   :class="{ 'bg-blue-50 text-blue-600 border-r-2 border-blue-600': $route.path === '/' }"
