@@ -233,19 +233,56 @@ const openPaymentModal = () => showPaymentModal.value = true
 const closePaymentModal = () => showPaymentModal.value = false
 
 const handlePaymentComplete = (data) => {
-  orderData.value = {
+  const outlet = JSON.parse(localStorage.getItem('selectedOutlet'))
+  if (!outlet) return alert('Outlet belum dipilih')
+
+  const outletKey = outlet.name.replace(/\s+/g, '_').toLowerCase()
+  const currentShift = JSON.parse(
+    localStorage.getItem(`currentShift_${outletKey}`)
+  )
+
+  if (!currentShift) {
+    alert('Shift belum dimulai')
+    return
+  }
+
+  // ================= ORDER OBJECT =================
+  const order = {
     orderNumber: `ORD-${Date.now()}`,
-    date: new Date().toLocaleString(),
-    customerName: 'Guest',
+    date: new Date().toISOString(),
     items: [...cartItems.value],
     subtotal: subtotal.value,
     tax: tax.value,
     total: total.value,
     paymentMethod: data.paymentMethod,
-    amountReceived: data.amountReceived || 0,
-    change: data.change || 0
+    outletId: outlet.id
   }
 
+  // ================= SAVE HISTORY =================
+  const orders = JSON.parse(localStorage.getItem('orders') || '[]')
+  orders.push(order)
+  localStorage.setItem('orders', JSON.stringify(orders))
+
+  // ================= SAVE ACTIVITY =================
+  const transactions =
+    JSON.parse(localStorage.getItem(`transactions_${outletKey}`) || '[]')
+
+  cartItems.value.forEach(item => {
+    transactions.push({
+      product: item.name,
+      qty: item.quantity,
+      shiftId: currentShift.start,
+      refund: false
+    })
+  })
+
+  localStorage.setItem(
+    `transactions_${outletKey}`,
+    JSON.stringify(transactions)
+  )
+
+  // ================= UI =================
+  orderData.value = order
   clearCart()
   closePaymentModal()
   showReceiptModal.value = true
