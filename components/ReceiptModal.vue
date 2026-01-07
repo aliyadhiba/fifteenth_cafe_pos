@@ -212,10 +212,41 @@ const printReceipt = () => {
   const printWindow = window.open("", "_blank", "width=400,height=600");
 
   printWindow.document.write(`
-    <html>
-      <body>${receiptContent.innerHTML}</body>
-    </html>
-  `);
+  <html>
+    <head>
+      <title>Receipt</title>
+
+      <style>
+        @page {
+          size: 58mm auto;   /* 🔴 ganti ke 80mm jika printer 80mm */
+          margin: 0;
+        }
+
+        body {
+          width: 58mm;      /* 🔴 harus sama dengan @page */
+          margin: 0;
+          padding: 0 6px;
+          font-family: Arial, sans-serif;
+          font-size: 11px;
+        }
+
+        .receipt-content {
+          width: 100%;
+        }
+
+        .flex {
+          display: flex;
+          justify-content: space-between;
+        }
+      </style>
+    </head>
+
+    <body>
+      ${receiptContent.innerHTML}
+    </body>
+  </html>
+`);
+
 
   printWindow.document.close();
   printWindow.print();
