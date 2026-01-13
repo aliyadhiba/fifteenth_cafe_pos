@@ -257,6 +257,7 @@ const handlePaymentComplete = (data) => {
     paymentMethod: data.paymentMethod,
     amountReceived: data.amountReceived,
     change: data.change, 
+    customerName: data.customerName || 'Guest',
     outletId: outlet.id
   }
 
