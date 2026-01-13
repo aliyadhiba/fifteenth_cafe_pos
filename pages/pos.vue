@@ -255,6 +255,8 @@ const handlePaymentComplete = (data) => {
     tax: tax.value,
     total: total.value,
     paymentMethod: data.paymentMethod,
+    amountReceived: data.amountReceived,
+    change: data.change, 
     outletId: outlet.id
   }
 
