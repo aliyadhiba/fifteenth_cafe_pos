@@ -53,22 +53,25 @@
                 </div>
 
                 <!-- ORDER INFO -->
-                <div style="font-size:12px;">
-                  <div class="flex justify-between">
-                    <span>Order ID:</span>
-                    <span>{{ orderData.orderNumber }}</span>
-                  </div>
-                  <div class="flex justify-between">
-                    <span>Date:</span>
-                    <span>{{ orderData.date }}</span>
-                  </div>
-                  <div class="flex justify-between">
-                    <span>Customer:</span>
-                    <span>{{ orderData.customerName }}</span>
-                  </div>
-                </div>
+<div style="font-size:12px;">
+  <div class="flex justify-between">
+    <span>Order ID:</span>
+    <span>{{ orderData.orderNumber }}</span>
+  </div>
 
-                <div style="border-top:1px dashed #000; margin:6px 0;"></div>
+  <div class="flex justify-between">
+    <span>Date:</span>
+    <span>{{ formatDate(orderData.date) }}</span>
+  </div>
+
+  <div class="flex justify-between">
+    <span>Customer:</span>
+    <span>{{ orderData.customerName || 'Walk-in' }}</span>
+  </div>
+</div>
+
+<div style="border-top:1px dashed #000; margin:6px 0;"></div>
+
 
                 <!-- ITEMS -->
                 <div style="font-size:12px;">
@@ -180,6 +183,20 @@ import {
   TransitionRoot
 } from "@headlessui/vue";
 import { CheckCircleIcon } from "@heroicons/vue/24/outline";
+
+const formatDate = (dateStr) => {
+  if (!dateStr) return '-'
+
+  const date = new Date(dateStr)
+  return date.toLocaleString('id-ID', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
+
 
 defineProps({
   isOpen: Boolean,
